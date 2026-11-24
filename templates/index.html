@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOC — GeoTrace Intelligence</title>
+  <link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">L</div><div><strong>LOC</strong><small>GEOTRACE INTELLIGENCE</small></div></div>
+    <div class="side-label">WORKSPACE</div>
+    <button class="nav active" data-view="dashboard"><span>◫</span> Overview</button>
+    <button class="nav" data-view="ip"><span>◎</span> IP Intelligence</button>
+    <button class="nav" data-view="phone"><span>⌕</span> Phone Intelligence</button>
+    <div class="side-label second">MANAGEMENT</div>
+    <button class="nav" data-view="history"><span>▤</span> Investigation History</button>
+    <button class="nav" data-view="settings"><span>⚙</span> Settings & Ethics</button>
+    <div class="sidebar-bottom"><div class="status-dot"></div><div><b>LOCAL INSTANCE</b><small>127.0.0.1 · PRIVATE</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">INTELLIGENCE WORKSPACE / <span id="crumb">OVERVIEW</span></div><h1 id="page-title">Overview</h1></div><div class="top-right"><span class="live-pill"><i></i> SYSTEM READY</span><div class="avatar">L</div></div></header>
+
+    <section class="view active" id="view-dashboard">
+      <div class="welcome"><div><div class="eyebrow cyan">GEOSPATIAL & NUMBERING INTELLIGENCE</div><h2>Investigate with clarity.</h2><p>Analyze public IP network data and phone-number metadata from one workspace.</p></div><div class="welcome-icon">⌖</div></div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-head">TOTAL INVESTIGATIONS <span>↗</span></div><div class="stat-value" id="total-count">0</div><div class="stat-foot">Stored locally on this device</div></div>
+        <div class="stat-card"><div class="stat-head">IP LOOKUPS <span>◎</span></div><div class="stat-value" id="ip-count">0</div><div class="stat-foot">Public address intelligence</div></div>
+        <div class="stat-card"><div class="stat-head">PHONE ANALYSES <span>⌕</span></div><div class="stat-value" id="phone-count">0</div><div class="stat-foot">Numbering-plan metadata</div></div>
+        <div class="stat-card"><div class="stat-head">INSTANCE STATUS <span>●</span></div><div class="stat-value ready">READY</div><div class="stat-foot">Local web application</div></div>
+      </div>
+      <div class="content-grid">
+        <div class="panel map-panel"><div class="panel-head"><div><div class="eyebrow">GEOSPATIAL VIEW</div><h3>IP location map</h3></div><span class="subtle-tag">LAST IP RESULT</span></div><div id="map" class="map"></div><div class="map-caption"><span><i class="legend-dot"></i> Approximate network location</span><span id="map-coords">No IP result loaded</span></div></div>
+        <div class="panel quick-panel"><div class="panel-head"><div><div class="eyebrow">QUICK ACTIONS</div><h3>Start an analysis</h3></div></div><button class="action-card" data-go="ip"><span class="action-icon blue">◎</span><span><b>IP intelligence</b><small>Geolocation, ISP, ASN and network details</small></span><strong>→</strong></button><button class="action-card" data-go="phone"><span class="action-icon violet">⌕</span><span><b>Phone intelligence</b><small>Validate number and inspect metadata</small></span><strong>→</strong></button><div class="notice"><b>Responsible use</b><p>LOC does not provide live phone tracking or exact-person location. Use only data you are authorized to analyze.</p></div></div>
+      </div>
+      <div class="panel recent-panel"><div class="panel-head"><div><div class="eyebrow">ACTIVITY</div><h3>Recent investigations</h3></div><button class="text-btn" data-go="history">View all →</button></div><div id="recent-list" class="recent-list empty">No investigations yet. Start with an IP or phone analysis.</div></div>
+    </section>
+
+    <section class="view" id="view-ip">
+      <div class="intro-row"><div><div class="eyebrow cyan">NETWORK INTELLIGENCE</div><h2>IP address lookup</h2><p>Inspect approximate geolocation and public network metadata for a globally routable IP.</p></div><div class="module-icon blue">◎</div></div>
+      <div class="panel lookup-panel"><label for="ip-input">TARGET IP ADDRESS</label><div class="input-row"><input id="ip-input" placeholder="e.g. 8.8.8.8" autocomplete="off"><button id="ip-submit" class="primary-btn">Analyze IP <span>→</span></button></div><div class="helper">IPv4 and IPv6 supported · Private/reserved IP ranges are blocked</div></div>
+      <div id="ip-error" class="error-box hidden"></div>
+      <div id="ip-results" class="results hidden">
+        <div class="result-heading"><div><div class="eyebrow">ANALYSIS RESULT</div><h3 id="ip-result-title">IP Intelligence</h3></div><button class="outline-btn" id="ip-export">Export JSON</button></div>
+        <div class="result-grid"><div class="panel detail-panel"><h4>NETWORK & GEO DATA</h4><div id="ip-details" class="detail-list"></div></div><div class="panel detail-panel"><h4>GEOSPATIAL POSITION</h4><div id="ip-map" class="map result-map"></div><div id="ip-map-caption" class="map-caption"></div></div></div>
+        <div class="disclaimer">ⓘ Approximate IP geolocation is not proof of a person's physical location.</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-phone">
+      <div class="intro-row"><div><div class="eyebrow violet-text">TELEPHONE NUMBER INTELLIGENCE</div><h2>Phone number analysis</h2><p>Validate a number and inspect numbering-plan metadata. Analysis runs locally.</p></div><div class="module-icon violet">⌕</div></div>
+      <div class="panel lookup-panel"><label for="phone-input">PHONE NUMBER</label><div class="input-row"><input id="phone-input" placeholder="+91 98765 43210" autocomplete="off"><button id="phone-submit" class="primary-btn violet-btn">Analyze number <span>→</span></button></div><div class="helper">Use international format with country code, e.g. +91 for India</div></div>
+      <div id="phone-error" class="error-box hidden"></div>
+      <div id="phone-results" class="results hidden"><div class="result-heading"><div><div class="eyebrow">ANALYSIS RESULT</div><h3>Number intelligence</h3></div><button class="outline-btn" id="phone-export">Export JSON</button></div><div class="panel detail-panel"><div class="validation-banner" id="phone-validity"></div><div id="phone-details" class="detail-grid"></div></div><div class="disclaimer">ⓘ Number metadata cannot reveal live GPS, a home address, or current handset location.</div></div>
+    </section>
+
+    <section class="view" id="view-history"><div class="intro-row"><div><div class="eyebrow cyan">LOCAL RECORDS</div><h2>Investigation history</h2><p>Review and export your locally stored analysis records.</p></div><a class="outline-btn download-link" href="/api/export.csv">Export CSV ↓</a></div><div class="panel history-panel"><div class="panel-head"><h3>All investigations</h3><button id="clear-history" class="danger-btn">Clear history</button></div><div id="history-list" class="history-list empty">No records available.</div></div></section>
+
+    <section class="view" id="view-settings"><div class="intro-row"><div><div class="eyebrow cyan">CONFIGURATION & TRANSPARENCY</div><h2>Settings & ethics</h2><p>Understand what LOC collects, where lookups go, and how data is stored.</p></div><div class="module-icon blue">⚙</div></div><div class="settings-grid"><div class="panel settings-card"><h3>Lookup providers</h3><div class="setting-row"><div><b>IP geolocation</b><small>ipwho.is · external HTTPS API</small></div><span class="status-label">CONNECTED ON DEMAND</span></div><div class="setting-row"><div><b>Phone metadata</b><small>Python phonenumbers · local library</small></div><span class="status-label local">LOCAL</span></div><div class="setting-row"><div><b>Map tiles</b><small>OpenStreetMap · requires internet</small></div><span class="status-label">EXTERNAL</span></div></div><div class="panel settings-card"><h3>Privacy & responsible use</h3><ul class="ethics-list"><li>IP addresses entered for lookup are sent to ipwho.is.</li><li>Phone numbers are parsed locally and are not sent to a phone lookup service.</li><li>History is stored in the local <code>geotrace.db</code> SQLite file.</li><li>Only public, globally routable IP addresses are accepted.</li><li>No live tracking, covert surveillance, or carrier-system access is included.</li></ul></div></div></section>
+
+    <footer>LOC GEOTRACE <span>BUILD 1.0.0</span><span>LOCAL-FIRST INTELLIGENCE TOOL</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>
